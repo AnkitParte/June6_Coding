@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Document</title>
+
+    <style>
+      #voucher_list{
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+        gap: 5px;
+        margin: 5px auto;
+        width: 80%;
+        
+      }
+      #voucher_list>div{
+        border: 1px solid black;
+
+      }
+      #voucher_list>div>img{
+        width: 100%;
+        height: 50%;
+      }
+      #voucher_list>div>h4,p{
+        text-align: center;
+      }
+      #voucher_list>div>button{
+        margin-left: 90px;
+      }
+      #balance{
+        border: 2px solid darkblue;
+      }
+      #balance>p{
+        text-align: center;
+      }
+
+
+
+    </style>
+  </head>
+  <body>
+    <!-- Wallet balence id:- "wallet_balance" (only number). -->
+    <!-- - The voucher card will have class :- "voucher".
+  - All the vouchers will be appended inside div with id "voucher_list".
+  - Buy button will have class:- "buy_voucher"
+  - All the purchased voucher will be stored with key :- "purchase". -->
+  <div id="balance">
+    <p>my wallet</p>
+    <p id="wallet_balance"></p>
+    <p> <a href="purchase.html">Purchase page</a> </p>
+  </div>
+  <div id="voucher_list"></div>
+  </body>
+</html>
+
+<script>
+
+        var x = JSON.parse(localStorage.getItem("user"));
+        var money = x.wallet;
+
+  function mybalance(arg){
+    
+    document.getElementById("wallet_balance").innerHTML = arg;
+
+  }
+  mybalance(money);
+
+  async function voucher(){
+    let url = "https://masai-vouchers-api.herokuapp.com/api/vouchers";
+
+    try{
+       var res = await fetch(url);
+       var out = await res.json();
+
+       console.log(out[0].vouchers);
+       display(out[0].vouchers)
+    }
+    catch(err){
+      console.log("error:",err)
+    }
+    
+
+
+  }
+  voucher();
+
+  function display(data){
+     
+    data.forEach(function(el){
+
+      let father = document.createElement("div");
+      father.setAttribute("class","voucher")
+
+      let img = document.createElement("img");
+      img.src = el.image;
+
+      let price = document.createElement("h4");
+      price.innerHTML = el.price;
+
+      let name = document.createElement("p");
+      name.innerText = el.name;
+
+      let btn = document.createElement("button")
+      btn.innerText = "Buy";
+      btn.setAttribute("class","buy_voucher");
+      btn.addEventListener("click",function(){
+        
+        voucherArr.push(el);
+        localStorage.setItem("purchase",JSON.stringify(voucherArr));//addMe(el);
+
+        var x = JSON.parse(localStorage.getItem("user"));
+        var money = x.wallet;
+
+        if(el.price > money){
+          voucherArr.pop();
+          localStorage.setItem("purchase",JSON.stringify(voucherArr));
+          alert("Sorry! insufficient balance")
+         
+
+        }
+        else{
+          alert("Hurray! purchase successful")
+          var m = Number(money) - Number(el.price);
+          money = m;
+          
+          var obj = new Userdata(x.name,x.email,x.address,money);
+
+          localStorage.setItem("user",JSON.stringify(obj));
+
+          mybalance(money);
+
+        }
+
+
+      })
+
+      father.append(img,name,price,btn);
+
+      document.getElementById("voucher_list").append(father);
+    })
+  }
+  var voucherArr = JSON.parse(localStorage.getItem("purchase")) || [];
+  // function addMe(e){
+  //   voucherArr.push(e);
+  //   localStorage.setItem("purchase",JSON.stringify(voucherArr));
+  // }
+  class Userdata{
+   constructor(name,email,address,amount){
+     this.name = name;
+     this.email = email;
+     this.address = address;
+     this.wallet = amount;
+   }
+ }
+
+</script>
+
+

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <style>
+      #formDiv{
+        width: 70%;
+        margin: 20px auto;
+      }
+      #navbar{
+        display: flex;
+        justify-content: space-evenly;
+        border: 2px solid black;
+      }
+      #navbar>a{
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar">
+      <h3>Sign Up</h3>
+      <a href="voucher.html">Purchase Voucher</a>
+    </div>
+    <!-- - name input box :- "name"
+  - email input box :- "email"
+  - Address input box :- "address"
+  - Amount input box :- "amount" 
+  - Submit button :- "submit"
+  - The user will be stored with key:- "user"
+  - The input fields should become empty after submitting -->
+  <div id="formDiv">
+    <form action="" id="form">
+      <input type="text" name="" id="name" placeholder="name">
+      <input type="text" name="" id="email" placeholder="email">
+      <input type="text" name="" id="address" placeholder="address">
+      <input type="number" name="" id="amount" placeholder="amount">
+      <input type="submit" name="" id="submit">
+
+    </form>
+  </div>
+  </body>
+</html>
+
+<script>
+
+ var form = document.getElementById("form");
+ form.addEventListener("submit",pushData);
+
+ class Userdata{
+   constructor(name,email,address,amount){
+     this.name = name;
+     this.email = email;
+     this.address = address;
+     this.wallet = amount;
+   }
+ }
+
+
+ function pushData(){
+
+    event.preventDefault();
+    //console.log("im in")
+
+    var name = document.getElementById("name").value;
+    var email = document.getElementById("email").value
+    var address = document.getElementById("address").value;
+    var amount = document.getElementById("amount").value;
+
+    var obj = new Userdata(name,email,address,amount);
+
+    localStorage.setItem("user",JSON.stringify(obj));
+
+    empty();
+    
+    //console.log("im out")
+
+ }
+
+ function empty(){
+
+    document.getElementById("name").value  = null;
+    document.getElementById("email").value = null;
+    document.getElementById("address").value = null;
+    document.getElementById("amount").value = null;
+
+ }
+
+ 
+
+
+</script>
